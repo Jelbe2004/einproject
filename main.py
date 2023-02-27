@@ -176,7 +176,7 @@ dkEmptyClimb2 = pygame.image.load("dkClimbEmpty2.png")
 dkForward = pygame.image.load("dkForward.png")
 dkLeft = pygame.image.load("dkLeft.png")
 dkRight = pygame.image.load("dkRight.png")
-dkDefeat = pygame.image.load("DK-defeat.png")
+dkDefeat = pygame.image.load("dk-defeat.png")
 dkImage = dkForward
 
 barrelStack = pygame.image.load("barrel-stack.png")
@@ -191,3 +191,356 @@ barrelPic = []
 brokenHeart = pygame.image.load("broken-heart.png")
 fullHeart = pygame.image.load("full-heart.png")
 clock = pygame.time.Clock()
+
+for i in range(0,400):
+  x=random.randint(0,800)
+  confettiX.append(x)
+  y=random.randint(-500,-100)
+  confettiY.append(y)
+  r=random.randint(1,4)
+  confettiRadius.append(r)
+  s=random.randint(5,20)
+  confettiSpeed.append(s)
+  colour=random.randint(0,4)
+  confettiColour.append(colours[colour])
+
+def instructions():
+  print("Donkey Kong has kidnapped Pauline!")
+  print ("You must now help Mario save her by climbing all the way")
+  print ("up the structure to the platform where she is being held.")
+  print ("You will have three lives, and you get points by rescuing")
+  print ("Pauline and jumping over barrels.")
+  print ("To win, save her 5 times or get a score of 999999 or over.")
+  print ("Use the arrow keys to move, and press the space to jump.")
+  print ("In the menus, use the up and down keys to choose your option")
+  print ("and the return key to select it.")
+  print ("GOOD LUCK!")
+
+def getName():
+
+
+
+  return name
+
+def highScore():
+  leaderboard["Player"]= score
+  scores=leaderboard.values()
+
+def outputLeaderboard():
+  rank=1
+  scores= leaderboard.values()
+  names=leaderboard.keys()
+  sortedNames=[]
+
+def collide():
+  global hit
+  for i in range(0, len(barrelX)):
+    if marioX+20>= barrelX[i] and marioX<= barrelX[i]+26 and marioY+30>= barrelY[i] and marioY<= barrleY[i]+20:
+      hit = true
+
+  return hit
+
+def ladderCheck():
+  global marioY
+
+  upLadder = False
+  downLadder = False
+  moveSides = True
+
+  for i in range(0, len(ladderX1)):
+    if marioX>= ladderX1[i] and marioX<= ladderX2[i] and marioY>= ladderY1[i] and marioY<= ladderY2[i]:
+      downLadder= True
+      upLadder = True
+      moveSides = False
+
+    if marioY==ladderY1[i]:
+      upLadder = False
+
+      if fullLadderUp[i]:
+        moveSides = True
+
+    if marioY == ladderY2[i]:
+      downLadder = False
+
+      if fullLadderDown[i]:
+        moveSides = True
+
+    if upLadder or downLadder:
+      break
+
+  return upLadder, downLadder, moveSides
+
+def incline (y, x, direction, object):
+  global inclineCount
+
+  if y <= 720 and y >= 657:
+    startNum = 6
+    endNum = len(platInclineX) - 1
+    move=3
+
+  elif (y <=638 and y >= 553) or (y>=353 and y <=438):
+    StartNum = 0
+    endNum = len(platInclineX) -2
+    move = -3
+
+  elif (y <= 541 and y >= 456) or (y <= 341 and y >= 256):
+        startNum = 1
+        endNum = len(platInclineX) - 1
+        move = 3
+
+  elif y <= 245 and y >= 149:
+        startNum = 8
+        endNum = len(platInclineX) - 2
+        move = -3
+  else:
+        startNum = 0
+        endNum = 0
+        move = 0
+
+  for i in range(startNum, endNum):
+    if x == platInclineX[i]:
+      if (jumpLeft or jumpRight) and object == "mario":
+                inclineCount = inclineCount + 1 
+      else:
+         if direction == "right":
+                    y = y - move
+
+         elif direction == "left":
+                    y = y + move
+
+  if (jumpLeft or jumpRight) and object == "mario":
+        return move
+
+  else:
+        return y
+
+
+def boundaries(x, y):
+  left = True
+  right = True
+  if x <= 105 and x >= 96:
+    for i in range(0, len(leftBoundariesY)):
+      if y <= leftBoundariesY[i] and y >= leftBoundariesY[i] - 49:
+                left = False
+  
+  elif x >= 660 and x <= 669:
+    for i in range(0, len(rightBoundariesY)):
+      if y <= rightBoundariesY[i] and y >= rightBoundariesY[i] - 49:
+                right = False
+                     
+  return left, right
+
+def introScene():
+  if dkClimb <= 390:
+            screen.blit(withLadder, (48, 0))
+            if dkClimb % 30 == 0:
+                screen.blit(dkUp2, (350, 660-dkClimb))
+            else:  
+                screen.blit(dkUp1, (370, 660-dkClimb))
+  elif dkClimb > 390 and dkClimb <= 580:
+            screen.blit(platform0, (55, 9))
+            screen.blit(dkUp2, (350, 660-dkClimb))
+  if climbDone:
+            screen.blit(platforms[platNum], (platformsX[platNum], platformsY[platNum]))
+            pauline(paulineStill)
+            screen.blit(dkForward, (dkJumpX, dkJumpY))
+def startScreen():
+   screen.blit(start, (48, 0))
+
+def background():
+  screen.blit(level, (31, -14))
+  screen.blit(barrelStack, (60, 188))
+
+def dk():
+  screen.blit(dkImage, (130, 176))
+
+def mario():
+  screen.blit(marioImage, (marioX, marioY))
+
+def pauline(paulinePic):
+  screen.blit(paulinePic, (335, 133))
+
+def barrel():
+  for i in range(0, len(barrelPic)):
+        screen.blit(barrelPic[i], (barrelX[i],barrelY[i]))
+
+
+def marioLives():
+  for i in range(0, lives):
+    screen.blit(life, (60+i*20, 100))
+
+
+def levelNumber():
+  for i in range(0, len(blueNumbers)):
+    if levelNum / 10 == i:
+            screen.blit(blueNumbers[i], (611, 86))
+
+    if levelNum % 10 == i:
+            screen.blit(blueNumbers[i], (635, 86))
+
+def playersScores(scoreType, scoreX, scoreY):
+  tempScore = str(scoreType)
+  numOfZero = 6-len(tempScore)
+  for i in range(0, numOfZero):
+        screen.blit(whiteNumbers[0], (scoreX, scoreY))
+        scoreX = scoreX + 24
+
+def win():
+  screen.blit(marioLeft, (440, 150))
+  if dkClimb <= 30:
+        pauline(paulineStill)
+        screen.blit(fullHeart, (386, 130))
+  else:
+        screen.blit(brokenHeart, (387, 130))
+  if winGame == False:
+        if dkClimb % 30 == 0:
+            screen.blit(dkImage1, (240 - moveOver1, 160-dkClimb))
+        else:  
+            screen.blit(dkImage2, (240 - moveOver2, 160-dkClimb))
+  else:
+        dk()
+
+def end(endScreen):
+  screen.blit(endScreen, (0, 30))
+  if option == "bottom":    
+        screen.blit(selectIcon, (270, 640))
+  else:
+        screen.blit(selectIcon, (270, 575))
+
+def confetti():
+   for i in range(0, 400):
+      pygame.draw.circle(screen, confettiColour[i], (confettiX[i], confettiY[i]), confettiRadius[i], 0) 
+def redraw_screen():
+  global climbDone
+  global gameStart
+  global gameDone
+  global winGameSceneDone
+  global startDone
+  global startOutput
+  screen.fill(BLACK)
+  if gameDone:
+    end(gameOverScreen)
+    playersScores(score, 388, 387)
+    playersScores(highestScore, 485, 445)
+  elif winGame:
+    if winGameSceneOutput:
+      win()
+      marioLives()
+                
+      levelNumber()
+      playersScores(score, 88, 40)
+      playersScores(highestScore, 327, 40)
+    elif winGameSceneDone:
+      end(winScreen)
+      confetti()
+      playersScores(score, 388, 387)
+      playersScores(highestScore, 485, 445)
+  else:
+    if pressed == False:
+            screen.blit(title, (54, 18))
+    elif pressed and introDone == False:
+      introScene()
+      marioLives()
+    elif introDone == True and gameStart == False:
+      startScreen()
+      marioLives()
+      startOutput = True
+      startDone = True
+    elif (gameStart and winLevel == False) or deathScene:
+      background()
+      dk()
+      mario()
+      pauline(paulineHelp)
+      marioLives()
+      if scoreWin == False and deathScene == False:
+                barrel()
+    elif winLevel:
+      win()
+      marioLives()
+    levelNumber()
+    playersScores(score, 88, 40)
+    playersScores(highestScore, 327, 40)
+  pygame.display.update()
+
+instructions()
+
+pygame.init()
+#walk = pygame.mixer.Sound("walking\\walking.wav")
+#jump = pygame.mixer.Sound("jump\\jump.wav")
+#intro = pygame.mixer.Sound("intro1\\intro1.wav")
+#death = pygame.mixer.Sound("death\\death.wav")
+#bac = pygame.mixer.music.load("bacmusic\\bacmusic.wav")
+death_cnt = 0
+while replay:
+  WIDTH = 800
+  HEIGHT = 800
+  screen = pygame.display.set_mode((WIDTH,HEIGHT))
+  pygame.display.set_caption('Donkey Kong')
+  inPlay = True
+  print ("Hit ESC to end the program.")
+  try:
+      pygame.mixer.music.play(-1)
+  except:
+      pygame.mixer.init()
+  while inPlay:
+    if pressed == True and climbDone == False:
+      if dkClimb == 0:
+        levelNum = levelNum + 1
+      if dkClimb == 390:
+                pygame.time.delay(500)
+      if dkClimb >= 560:
+                climbCount = -20
+      if dkClimb != 510 or climbCount != -20:
+                dkClimb = dkClimb + climbCount
+      else:
+                climbDone = True
+    elif climbDone and introDone == False:
+      if platNum <= 6:
+        if dkJumpY == 152:
+          dkJumpYNum = 10
+        if dkJumpY == 172:
+          dkJumpYNum = -10
+          platNum = platNum + 1
+        dkJumpX = dkJumpX - 12
+        if platNum != 6:
+          dkJumpY = dkJumpY + dkJumpYNum
+                
+        else:
+          introDone = True
+          pygame.time.delay(1000)
+      if gameStart:
+        if scoreWin == False and winLevel == False:
+          hit = collide()
+        moveLeft, moveRight = boundaries(marioX, marioY)
+        if hit == False:
+          upLadder, downLadder, moveSides = ladderCheck()
+          if marioY <= 154:
+            winLevel = True
+            dkClimb = -15
+            climbCount = 15
+            marioX = 150
+            marioY = 720
+            marioImage = marioRight
+          if jumpLeft or jumpRight or jumpStill:
+            jumpCount = jumpCount + 1
+            marioY = marioY + addJump
+            if jumpCount == 7:
+              addJump = 7
+            if jumpCount == 14:
+              if jumpPoint == 1:
+                score = score + 100
+              if direction == "right":
+                marioImage = marioRight
+                marioY = marioY - move*inclineCount
+              else:
+                marioImage = marioLeft
+                marioY = marioY + move*inclineCount
+              addJump = -7
+              jumpCount = 0
+              jumpPoint = 0
+              inclineCount = 0
+                        
+              jumpLeft = False
+              jumpRight = False
+              jumpStill = False
+              
